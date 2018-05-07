@@ -1,2 +1,6 @@
 # RFirstProject
-Doing data cleaning for weather data is quite a messy data
+
+Data Cleaning Basics Implemented in R
+
+Data Source : 
+Code Snippet : 
