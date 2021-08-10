@@ -117,9 +117,9 @@
 
     . Command: sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
 
-    * Note:- This command will configure the 'amazon-cloudwatch-agent' service on this machine where you can start, stop, and restart with 'systemctl' commands.
+   Note:- This command will configure the 'amazon-cloudwatch-agent' service on this machine where you can start, stop, and restart with 'systemctl' commands.
 
-    * Note:- To check if cloudwatch agent is running, run following command on EC2 instance (Ref:- https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/troubleshooting-CloudWatch-Agent.html ):
+   Note:- To check if cloudwatch agent is running, run following command on EC2 instance (Ref:- https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/troubleshooting-CloudWatch-Agent.html ):
 
     . Command: sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a status
 
