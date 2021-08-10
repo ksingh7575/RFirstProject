@@ -164,7 +164,7 @@
   
     . sudo systemctl stop aws-kinesis-agent
 
-    (To check if Kinesis Agent has stopped; command: sudo systemctl status aws-kinesis-agent)
+    (To check if Kinesis Agent has stopped; run command: sudo systemctl status aws-kinesis-agent)
 
   25. I will see my alarm go up with state 'In alarm' as shown in scren-shot 'Twenty-Fifth_Step.png'. If you click on the alarm name which was showing state 'In alarm', under 'Details' section from 'host' you can identify which is the EC2 instance on which Kinesis Agent process stopped running . Another, easy way of identifying the concerned EC2 instance, is give your alarm name related to name of EC2 instance.
 
