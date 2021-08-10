@@ -1,28 +1,28 @@
 # Use-case/Requirement
 
-    1. You have multiple EC2 instances and all these EC2 instances have stand-alone application running which is 'AWS Kinesis Agent'. 
+   1. You have multiple EC2 instances and all these EC2 instances have stand-alone application running which is 'AWS Kinesis Agent'. 
     
-    2. Now, these Kinesis agents publishes custom CloudWatch metrics with a single namespace of 'AWSKinesisAgent' [1]
+   2. Now, these Kinesis agents publishes custom CloudWatch metrics with a single namespace of 'AWSKinesisAgent' [1]
 
-    3. Due to this all the metric data points from multiple Kinesis agents get combined under single namespace.
+   3. Due to this all the metric data points from multiple Kinesis agents get combined under single namespace.
 
-    4. Now, if for some reason, out of these multiple Kinesis Agents, a Kinesis Agent running on an EC2 instance goes down; then it is then hard to determine exactly which Kinesis Agent went down?
+   4. Now, if for some reason, out of these multiple Kinesis Agents, a Kinesis Agent running on an EC2 instance goes down; then it is then hard to determine exactly which Kinesis Agent went down?
 
-    5. In this case, below is the solution or a way that you can use to monitor health of multiple Kinesis Agents running on several EC2 instances.
+   5. In this case, below is the solution or a way that you can use to monitor health of multiple Kinesis Agents running on several EC2 instances.
 
 # Solution
 
-    1. Every EC2 instance, which has 'AWS Kinesis Agent' running, will have 'Amazon Cloudwatch Agent' installed using 'AWS Systems Manager Run Command' which is offered at no additional cost [2].
+   1. Every EC2 instance, which has 'AWS Kinesis Agent' running, will have 'Amazon Cloudwatch Agent' installed using 'AWS Systems Manager Run Command' which is offered at no additional cost [2].
 
-    2. This CW Agent, pushes custom metrics data to Amazon CloudWatch. This may cost you additional amount. However, for more on details on that, please check 'AWS Cloudwatch Pricing' page [3].
+   2. This CW Agent, pushes custom metrics data to Amazon CloudWatch. This may cost you additional amount. However, for more on details on that, please check 'AWS Cloudwatch Pricing' page [3].
  
-    3. The 'procstat plugin' collects, 'process metrics'. As long as the process (in our use-case the process is aws-kinesis-agent) is running inside the instance, the plugin will continuously monitor the specified metrics [4]
+   3. The 'procstat plugin' collects, 'process metrics'. As long as the process (in our use-case the process is aws-kinesis-agent) is running inside the instance, the plugin will continuously monitor the specified metrics [4]
 
-    4. Set-up CloudWatch alarm for all the custom metrics and set its missing data policy to Treat missing data as bad (breaching threshold) to trigger an alarm condition.
+   4. Set-up CloudWatch alarm for all the custom metrics and set its missing data policy to Treat missing data as bad (breaching threshold) to trigger an alarm condition.
 
-    5. When the process is stopped or crashed on the instance, the alarm goes into the state 'In alarm'. As an additional step you can have 'SNS email notification' enabled under alarm actions [5] (but in this arctile I have skipped that part)
+   5. When the process is stopped or crashed on the instance, the alarm goes into the state 'In alarm'. As an additional step you can have 'SNS email notification' enabled under alarm actions [5] (but in this arctile I have skipped that part)
 
-    6. Later, instead of automatically restarting the Kinesis agent in this case, it is better if you see why it has failed, using troubleshooting steps and then restart by yourself the Kinesis Agent on that EC2 instance.
+   6. Later, instead of automatically restarting the Kinesis agent in this case, it is better if you see why it has failed, using troubleshooting steps and then restart by yourself the Kinesis Agent on that EC2 instance.
 
 
 # Prerequisites
@@ -77,9 +77,8 @@
 
   9. After the status transitions to 'Success', it means 'AWS Cloudwatch Agent' got successfully installed on all the EC2 instances that you had selected in 'Fifth_Step' above. Moving ahead, you can configure the CloudWatch agent. * Note:- See screen-shot named 'Ninth_Step.png' for reference.
 
-## Part B:- Configuring CloudWatch Agent on all EC2 instances:-
+## Part B:- Configuring CloudWatch Agent on all EC2 instances (Note:- You will have to follow the below step for each and every EC2 instance, where Kinesis Agent is running):-
 
-* Note:- You will have to follow the below step for each and every EC2 instance, where Kinesis Agent is running.
 
   10. Open Amazon EC2 console, choose your EC2 instance, and then choose Connect.
 
@@ -110,7 +109,7 @@
         }
 
     ```
-    13. This configuration enables the 'procstat plugin' and tells it to monitor the 'aws-kinesis-agent' process identified by the 'aws-kinesis-agent.pid' file. The plugin will monitor the 'memory_rss' metric of this process and send information to Amazon CloudWatch. 
+   13. This configuration enables the 'procstat plugin' and tells it to monitor the 'aws-kinesis-agent' process identified by the 'aws-kinesis-agent.pid' file. The plugin will monitor the 'memory_rss' metric of this process and send information to Amazon CloudWatch. 
 
   * Note:- Metric memory_rss:- Tells the amount of real memory (resident set) that the process is using (Unit: Bytes) (Ref:- https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Agent-procstat-process-metrics.html)
 
@@ -163,28 +162,23 @@
 
   24. For example: I stopped the Kinesis Agent running on one of my EC2 instance using following command OR the Kinesis Agent process stopped running by itself for some reason:
   
-    ```
-    sudo systemctl stop aws-kinesis-agent
+    . sudo systemctl stop aws-kinesis-agent
 
-    (To check if it has stopped; command: sudo systemctl status aws-kinesis-agent)
-    ```
+    (To check if Kinesis Agent has stopped; command: sudo systemctl status aws-kinesis-agent)
 
   25. I will see my alarm go up with state 'In alarm' as shown in scren-shot 'Twenty-Fifth_Step.png'. If you click on the alarm name which was showing state 'In alarm', under 'Details' section from 'host' you can identify which is the EC2 instance on which Kinesis Agent process stopped running . Another, easy way of identifying the concerned EC2 instance, is give your alarm name related to name of EC2 instance.
 
   26. As soon as you see an alarm on particular EC2 instance, log in to that EC2 instance and check the Kinesis Agent logs by running below command and this may help you in finding the reason what has causing Kinesis Agent running on that EC2 instance go down.  
   
-  ```
-    Command: cat  /var/log/aws-kinesis-agent/aws-kinesis-agent.log
-  ```
+    . Command: cat  /var/log/aws-kinesis-agent/aws-kinesis-agent.log
 
   27. After this, if Kineis Agent did not restart automatically, you can run the below command to start the Kineis Agent again:
   
-    ```
-    sudo systemctl start aws-kinesis-agent
-    ```
+    . sudo systemctl start aws-kinesis-agent
+    
 ## Part E:- Conclusion:-
 
-* To conclude, using Amazon CloudWatch agent on multiple EC2 instances we publish custom metrics under namespace 'CWAgent'. This provides a reliable way to collect 'AWS Kinesis Agent' process liveness information. Further, you will get notified using CW alarm that we created if ''AWS Kinesis Agent' processe and service goes down unexpectedly which will allow you to take remedial actions for continued business operations.
+* To conclude, using Amazon CloudWatch agent on multiple EC2 instances we publish custom metrics under namespace 'CWAgent'. This provides a reliable way to collect 'AWS Kinesis Agent' process liveness information. Further, you will get notified using CW alarm that we created if ''AWS Kinesis Agent' process and service goes down unexpectedly which will allow you to take remedial actions for continued business operations.
 
 ## References
 
