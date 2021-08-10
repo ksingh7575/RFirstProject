@@ -34,7 +34,7 @@
 
 * IMP Note: For more detailed information on how to set-up and check the above prerequisites, please check AWS Premium Support Article: https://aws.amazon.com/premiumsupport/knowledge-center/systems-manager-ec2-instance-not-appear/
 
-* As an additional, important point to note, please make sure you are following below steps while checking 3rd prerequisites from above:
+* As an additional, important point to note, please make sure you are following below steps while checking 3rd prerequisites from above for this use-case:
 
   1. By default, AWS Systems Manager doesn't have permission to perform actions on your instances. Grant access by using an AWS Identity and Access Management (IAM) instance profile. An instance profile is a container that passes IAM role information to an Amazon Elastic Compute Cloud (Amazon EC2) instance at launch [6].
 
