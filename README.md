@@ -32,7 +32,7 @@
 3. Have the correct AWS Identity and Access Management (IAM) role attached.
 4. Have connectivity to the instance metadata service.
 
-# IMP Note: For more detailed information on how to set-up and check the above prerequisites, please check AWS Premium Support Article: https://aws.amazon.com/premiumsupport/knowledge-center/systems-manager-ec2-instance-not-appear/
+### IMP Note: For more detailed information on how to set-up and check the above prerequisites, please check AWS Premium Support Article: https://aws.amazon.com/premiumsupport/knowledge-center/systems-manager-ec2-instance-not-appear/
 
 * As an additional, important point to note, please make sure you are following below steps while checking 3rd prerequisites from above for this use-case:
 
